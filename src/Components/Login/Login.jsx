@@ -1,46 +1,55 @@
 import { useState } from "react";
-import PropTypes from "prop-types";
-
-async function loginUser(credentials) {
-  return fetch("http://localhost:3001/login", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(credentials),
-  }).then((response) => response.json());
-}
+import loginService from "./../services/login";
 
 const Login = (props) => {
   const { setToken } = props;
-  const [username, setUserName] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [user, setUser] = useState(null);
 
-  const handleSubmit = async (e) => {
-    console.log("submiting");
+  const handleLogin = async (e) => {
     e.preventDefault();
-    const token = await loginUser({
-      username,
-      password,
-    });
-    setToken(token);
+    if (username && password) {
+      try {
+        const user = await loginService.login({
+          username,
+          password,
+        });
+
+        console.log(user);
+        // SET TOKEN
+        setToken(user.token);
+
+        // setUser
+        setUser(user);
+        setUsername("");
+        setPassword("");
+      } catch (exception) {
+        console.log("Wrong credentials");
+        setTimeout(() => {
+          console.log(null);
+        }, 5000);
+      }
+    }
   };
 
   return (
     <div className="flex justify-center items-center bg-contain bg-blue-300 h-screen ">
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleLogin}>
         <label>
           <p>Username</p>
           <input
             type="text"
+            value={username}
             name="username"
-            onChange={(e) => setUserName(e.target.value)}
+            onChange={(e) => setUsername(e.target.value)}
           />
         </label>
         <label>
           <p>Password</p>
           <input
             type="password"
+            value={password}
             name="password"
             onChange={(e) => setPassword(e.target.value)}
           />
@@ -52,10 +61,6 @@ const Login = (props) => {
       </form>
     </div>
   );
-};
-
-Login.propTypes = {
-  setToken: PropTypes.func.isRequired,
 };
 
 export default Login;

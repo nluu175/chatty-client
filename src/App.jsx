@@ -4,7 +4,7 @@ import Dashboard from "./Components/Dashboard/Dashboard";
 import Preferences from "./Components/Preferences/Preferences";
 import ChatPage from "./Components/ChatPage";
 import Login from "./Components/Login/Login";
-import useToken from "./Components/Custom/useToken";
+import useToken from "./Components/custom/useToken";
 import "./App.css";
 
 // ! Check the below link for how to add login auth
@@ -14,6 +14,7 @@ import "./App.css";
 
 const App = () => {
   const { token, setToken } = useToken();
+  const [currentUser, setCurrentUser] = useState("");
 
   if (!token) {
     return <Login setToken={setToken} />;
