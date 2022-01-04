@@ -1,59 +1,29 @@
-import { io } from "socket.io-client";
-import { useState, useEffect } from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { useState } from "react";
+import Dashboard from "./Components/Dashboard/Dashboard";
+import Preferences from "./Components/Preferences/Preferences";
+import ChatPage from "./Components/ChatPage";
+import Login from "./Components/Login/Login";
 import "./App.css";
 
+// ! Check the below link for how to add login auth
+// ! https://www.digitalocean.com/community/tutorials/how-to-add-login-authentication-to-react-applications
 const App = () => {
-  // Use this if client and server are running on the same domain
-  // const socket = io();
-  // Else:
-  const [socket, setSocket] = useState(null);
+  const [token, setToken] = useState();
 
-  useEffect(() => {
-    const newSocket = io(`http://localhost:3001`);
-    setSocket(newSocket);
-    return () => newSocket.close();
-  }, [setSocket]);
+  if (!token) {
+    return <Login setToken={setToken} />;
+  }
 
   return (
     <div>
-      {/* Background */}
-      <div
-        className="flex justify-center items-center
-        bg-contain bg-blue-300 
-        h-screen "
-      >
-        {/* Container */}
-        <div
-          className="flex bg-white min-w-[90%] max-w-[95%] h-[90%] 
-          border-[1px] border-solid border-black rounded-md
-        hover:border-zinc-500 hover:border-[2px]"
-        >
-          {/* Sidebar */}
-          <div
-            className="flex flex-col flex-initial w-[25%] rounded-tl-md rounded-bl-md
-            border-[1px] border-solid border-zinc-200"
-          >
-            {/* Profile & Settings */}
-            <div className="flex-initial h-[10%] bg-red-200">
-              PROFILE AND SETTINGS
-            </div>
-            <div className="flex-1 bg-red-400"></div>
-          </div>
-          {/* Content Container */}
-          <div
-            className="flex flex-col flex-1 
-            rounded-tr-md rounded-br-md
-            border-[1px] border-solid border-zinc-200"
-          >
-            <div className="flex-initial h-[5%] bg-lime-400">Chat Name</div>
-            <div className="flex-1 bg-lime-800">Chat Log</div>
-            <div className="flex-initial h-[10%] bg-lime-200">
-              Chat Input
-              <form></form>
-            </div>
-          </div>
-        </div>
-      </div>
+      <Router>
+        <Routes>
+          <Route exact path="/" element={<ChatPage />} />
+          <Route exact path="/dashboard" element={<Dashboard />} />
+          <Route exact path="/preferences" element={<Preferences />} />
+        </Routes>
+      </Router>
     </div>
   );
 };
